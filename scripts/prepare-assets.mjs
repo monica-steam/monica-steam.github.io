@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 
 const iconUrl =
-  "https://raw.githubusercontent.com/JiangKaslana/Monica-Steam/main/image/monica_launcher.webp";
+  "https://raw.githubusercontent.com/JoyinJoester/Monica-Steam/main/image/monica_launcher.webp";
 const outputPath = new URL("../public/monica-steam.webp", import.meta.url);
 
 const response = await fetch(iconUrl, {
@@ -22,4 +22,4 @@ if (!contentType.includes("image/webp") && !contentType.includes("application/oc
 await mkdir(new URL("../public/", import.meta.url), { recursive: true });
 await writeFile(outputPath, Buffer.from(await response.arrayBuffer()));
 
-console.log("Prepared public/monica-steam.webp from the Monica Steam app repository.");
+console.log("Prepared public/monica-steam.webp from the Monica Steam upstream repository.");

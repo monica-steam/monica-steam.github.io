@@ -1,9 +1,15 @@
 # Monica Steam Documentation
 
-这是 `https://monica-steam.github.io/` 的 VitePress 文档站源代码，对应仓库：
+这是 `https://monica-steam.github.io/` 的 VitePress 文档站源代码，对应文档仓库：
 
 ```text
 monica-steam/monica-steam.github.io
+```
+
+Monica Steam 主项目仓库：
+
+```text
+JoyinJoester/Monica-Steam
 ```
 
 ## GitHub Pages
@@ -36,10 +42,10 @@ npm run docs:build
 
 首页 Hero、顶部 Logo、favicon 与 Apple Touch Icon 使用 Monica Steam App 的正式图标。
 
-为了避免在两个仓库里维护两份二进制资源，`scripts/prepare-assets.mjs` 会在开发或构建前从主项目的：
+为了避免在两个仓库里维护两份二进制资源，`scripts/prepare-assets.mjs` 会在开发或构建前从上游主项目的：
 
 ```text
-JiangKaslana/Monica-Steam/image/monica_launcher.webp
+JoyinJoester/Monica-Steam/image/monica_launcher.webp
 ```
 
 获取图标，并生成：

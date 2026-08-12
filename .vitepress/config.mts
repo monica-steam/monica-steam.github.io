@@ -24,9 +24,11 @@ export default defineConfig({
       {
         text: "项目",
         items: [
+          { text: "Monica Steam 主项目", link: "https://github.com/JoyinJoester/Monica-Steam" },
           { text: "Monica 生态关系", link: "/about/ecosystem" },
           { text: "版本状态", link: "/about/release-status" },
           { text: "赞助与支持", link: "/about/support" },
+          { text: "文档站仓库", link: "https://github.com/monica-steam/monica-steam.github.io" },
         ],
       },
     ],
@@ -107,7 +109,7 @@ export default defineConfig({
       text: "在 GitHub 上编辑此页",
     },
     socialLinks: [
-      { icon: "github", link: "https://github.com/JiangKaslana/Monica-Steam" },
+      { icon: "github", link: "https://github.com/JoyinJoester/Monica-Steam" },
     ],
     footer: {
       message: "Monica Steam 是非官方第三方 Steam 客户端，与 Valve Corporation 无隶属、授权或赞助关系。",

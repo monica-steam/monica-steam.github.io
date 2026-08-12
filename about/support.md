@@ -12,9 +12,13 @@
 - 备份与安全；
 - 文档维护。
 
-项目主页：
+Monica Steam 主项目仓库：
 
-`https://github.com/JiangKaslana/Monica-Steam`
+`https://github.com/JoyinJoester/Monica-Steam`
+
+文档站仓库：
+
+`https://github.com/monica-steam/monica-steam.github.io`
 
 ## 反馈问题
 

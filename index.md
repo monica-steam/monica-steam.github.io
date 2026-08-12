@@ -16,8 +16,8 @@ hero:
       text: 网络优化
       link: /network/overview
     - theme: alt
-      text: GitHub
-      link: https://github.com/JiangKaslana/Monica-Steam
+      text: 项目仓库
+      link: https://github.com/JoyinJoester/Monica-Steam
 
 features:
   - title: Steam Guard 与多账号
