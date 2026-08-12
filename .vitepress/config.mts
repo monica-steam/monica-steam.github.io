@@ -117,7 +117,7 @@ export default defineConfig({
     ],
     footer: {
       message: "Monica Steam 是非官方第三方 Steam 客户端，与 Valve Corporation 无隶属、授权或赞助关系。",
-      copyright: 'Monica Steam：<a href="https://github.com/JoyinJoester/Monica-Steam" target="_blank" rel="noreferrer">JoyinJoester</a> · 文档贡献：<a href="https://github.com/JiangKaslana" target="_blank" rel="noreferrer">JiangKaslana</a> · <a href="https://kianakaslana.top" target="_blank" rel="noreferrer">Blog</a> · GPL-3.0',
+      copyright: '<strong>Monica Steam</strong>：<a href="https://github.com/JoyinJoester/Monica-Steam" target="_blank" rel="noreferrer">JoyinJoester</a> · GPL-3.0 <span class="docs-credit">· 文档贡献：<a href="https://github.com/JiangKaslana" target="_blank" rel="noreferrer">JiangKaslana</a> · <a href="https://kianakaslana.top" target="_blank" rel="noreferrer">Blog</a></span>',
     },
   },
 });
