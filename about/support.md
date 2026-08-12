@@ -1,6 +1,6 @@
 # 赞助与支持
 
-如果 Monica Steam 对你有帮助，可以通过项目文档与主项目 README 中列出的方式支持项目维护。
+如果 Monica Steam 对你有帮助，可以通过主项目 README 中列出的方式支持项目维护。
 
 支持通常会用于：
 
@@ -12,13 +12,13 @@
 - 备份与安全；
 - 文档维护。
 
-文档项目仓库：
+Monica Steam 主项目仓库：
+
+`https://github.com/JoyinJoester/Monica-Steam`
+
+文档站仓库：
 
 `https://github.com/monica-steam/monica-steam.github.io`
-
-Android 源码当前维护仓库：
-
-`https://github.com/JiangKaslana/Monica-Steam`
 
 ## 反馈问题
 
