@@ -2,8 +2,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "docs:dev": "vitepress dev .",
-    "docs:build": "vitepress build .",
+    "prepare:assets": "node scripts/prepare-assets.mjs",
+    "docs:dev": "npm run prepare:assets && vitepress dev .",
+    "docs:build": "npm run prepare:assets && vitepress build .",
     "docs:preview": "vitepress preview ."
   },
   "devDependencies": {

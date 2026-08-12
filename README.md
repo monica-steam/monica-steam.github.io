@@ -1,18 +1,19 @@
 # Monica Steam Documentation
 
-这是 `https://monica-steam.github.io/` 的 VitePress 文档站源代码，已经整理为可直接上传到：
+这是 `https://monica-steam.github.io/` 的 VitePress 文档站源代码，对应仓库：
 
 ```text
 monica-steam/monica-steam.github.io
 ```
 
-## 上传后要做什么
+## GitHub Pages
 
-1. 将本压缩包内 **所有文件和目录上传到仓库根目录**，不要再套一层 `monica-steam.github.io/`。
-2. 打开仓库 `Settings → Pages`。
-3. `Build and deployment → Source` 选择 **GitHub Actions**。
-4. 向 `main` push 后等待 `Deploy Monica Steam Docs` 工作流完成。
-5. 站点地址：
+仓库使用 GitHub Actions 构建和部署：
+
+1. 打开仓库 `Settings → Pages`。
+2. `Build and deployment → Source` 选择 **GitHub Actions**。
+3. 向 `main` push 后等待 `Deploy Monica Steam Docs` 工作流完成。
+4. 站点地址：
 
 ```text
 https://monica-steam.github.io/
@@ -24,6 +25,30 @@ https://monica-steam.github.io/
 npm install
 npm run docs:dev
 ```
+
+构建：
+
+```bash
+npm run docs:build
+```
+
+## Monica Steam 图标
+
+首页 Hero、顶部 Logo、favicon 与 Apple Touch Icon 使用 Monica Steam App 的正式图标。
+
+为了避免在两个仓库里维护两份二进制资源，`scripts/prepare-assets.mjs` 会在开发或构建前从主项目的：
+
+```text
+JiangKaslana/Monica-Steam/image/monica_launcher.webp
+```
+
+获取图标，并生成：
+
+```text
+public/monica-steam.webp
+```
+
+生成文件已加入 `.gitignore`，最终 GitHub Pages 构建产物仍会包含正式图标。
 
 ## 设计
 
