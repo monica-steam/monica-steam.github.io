@@ -20,4 +20,8 @@ Monica Steam 源自 Monica Android 中的 Steam 能力，并作为独立 Steam A
 
 感谢所有向 Monica Steam 提交代码、报告问题、参与测试、维护文档、提供反馈和帮助定位兼容性问题的贡献者与用户。
 
+Monica Steam 主项目与正式开发记录以 [JoyinJoester/Monica-Steam](https://github.com/JoyinJoester/Monica-Steam) 为准。
+
+本文档站的主要整理与撰写贡献者之一为 [JiangKaslana](https://github.com/JiangKaslana)，个人博客：[kianakaslana.top](https://kianakaslana.top)。这项署名仅表示文档贡献，不改变 Monica Steam 主项目的作者与仓库归属。
+
 完整的代码贡献记录可以在 [Monica Steam Contributors](https://github.com/JoyinJoester/Monica-Steam/graphs/contributors) 查看。
