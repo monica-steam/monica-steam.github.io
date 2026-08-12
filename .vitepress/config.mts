@@ -10,7 +10,8 @@ export default defineConfig({
   head: [
     ["meta", { name: "theme-color", content: "#1a9fff" }],
     ["meta", { name: "color-scheme", content: "light dark" }],
-    ["link", { rel: "icon", type: "image/webp", href: "/monica-steam.webp" }],
+    ["link", { rel: "icon", type: "image/png", sizes: "64x64", href: "/favicon.png" }],
+    ["link", { rel: "shortcut icon", type: "image/png", href: "/favicon.png" }],
     ["link", { rel: "apple-touch-icon", href: "/monica-steam.webp" }],
   ],
   themeConfig: {
