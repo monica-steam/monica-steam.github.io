@@ -10,10 +10,11 @@ export default defineConfig({
   head: [
     ["meta", { name: "theme-color", content: "#1a9fff" }],
     ["meta", { name: "color-scheme", content: "light dark" }],
-    ["link", { rel: "icon", href: "/logo.svg" }],
+    ["link", { rel: "icon", type: "image/webp", href: "/monica-steam.webp" }],
+    ["link", { rel: "apple-touch-icon", href: "/monica-steam.webp" }],
   ],
   themeConfig: {
-    logo: "/logo.svg",
+    logo: "/monica-steam.webp",
     siteTitle: "Monica Steam",
     nav: [
       { text: "指南", link: "/guide/quick-start" },

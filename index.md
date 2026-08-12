@@ -6,7 +6,7 @@ hero:
   text: "独立、原生、面向 Steam 的 Android 客户端"
   tagline: "Steam Guard · 多账号 · 游戏库 · 商店 · 好友聊天 · 移动确认 · 备份 · 网络优化"
   image:
-    src: /logo.svg
+    src: /monica-steam.webp
     alt: Monica Steam
   actions:
     - theme: brand
