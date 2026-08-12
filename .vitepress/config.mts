@@ -29,6 +29,7 @@ export default defineConfig({
           { text: "版本状态", link: "/about/release-status" },
           { text: "赞助、QQ群与支持", link: "/about/support" },
           { text: "致谢", link: "/about/thanks" },
+          { text: "友情链接", link: "/about/links" },
           { text: "文档站仓库", link: "https://github.com/monica-steam/monica-steam.github.io" },
         ],
       },
@@ -83,6 +84,7 @@ export default defineConfig({
           { text: "版本状态", link: "/about/release-status" },
           { text: "赞助、QQ群与支持", link: "/about/support" },
           { text: "致谢", link: "/about/thanks" },
+          { text: "友情链接", link: "/about/links" },
         ],
       },
     ],
@@ -115,7 +117,7 @@ export default defineConfig({
     ],
     footer: {
       message: "Monica Steam 是非官方第三方 Steam 客户端，与 Valve Corporation 无隶属、授权或赞助关系。",
-      copyright: "Monica Steam contributors · GPL-3.0",
+      copyright: 'Monica Steam：<a href="https://github.com/JoyinJoester/Monica-Steam" target="_blank" rel="noreferrer">JoyinJoester</a> · 文档贡献：<a href="https://github.com/JiangKaslana" target="_blank" rel="noreferrer">JiangKaslana</a> · <a href="https://kianakaslana.top" target="_blank" rel="noreferrer">Blog</a> · GPL-3.0',
     },
   },
 });
