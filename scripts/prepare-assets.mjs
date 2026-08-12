@@ -58,7 +58,9 @@ if (!iconBuffer) {
 // The Android launcher artwork contains breathing room that looks good on a phone,
 // but makes the browser tab favicon appear visually too small. Build a dedicated
 // 64×64 favicon by trimming that outer padding, then leave only a tiny 2px margin.
-await sharp(iconBuffer)
+// Sharp's toFile() expects a filesystem path string; keep URL handling in Node's
+// writeFile() instead so this works consistently on GitHub Actions.
+const faviconBuffer = await sharp(iconBuffer)
   .trim({ threshold: 10 })
   .resize(60, 60, {
     fit: "contain",
@@ -72,6 +74,8 @@ await sharp(iconBuffer)
     background: { r: 0, g: 0, b: 0, alpha: 0 },
   })
   .png({ compressionLevel: 9 })
-  .toFile(faviconOutput);
+  .toBuffer();
+
+await writeFile(faviconOutput, faviconBuffer);
 
 console.log("Prepared favicon.png with a tighter crop for browser tabs.");
