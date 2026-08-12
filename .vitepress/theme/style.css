@@ -1,0 +1,189 @@
+:root {
+  --monica-blue: #1a9fff;
+  --monica-deep: #2a6df4;
+  --monica-violet: #7d69e8;
+  --monica-cyan: #46d8ff;
+  --monica-shadow: rgba(26, 159, 255, 0.22);
+  --monica-shadow-strong: rgba(26, 159, 255, 0.34);
+  --monica-card-shadow: rgba(20, 77, 145, 0.12);
+
+  --vp-c-brand-1: var(--monica-blue);
+  --vp-c-brand-2: var(--monica-deep);
+  --vp-c-brand-3: #1769d2;
+  --vp-c-brand-soft: rgba(26, 159, 255, 0.14);
+
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(
+    120deg,
+    var(--monica-violet) 0%,
+    var(--monica-blue) 48%,
+    var(--monica-cyan) 100%
+  );
+
+  --vp-home-hero-image-background-image: radial-gradient(
+    circle at 50% 48%,
+    rgba(26, 159, 255, 0.72) 0%,
+    rgba(79, 114, 255, 0.45) 45%,
+    rgba(125, 105, 232, 0.18) 72%,
+    transparent 100%
+  );
+  --vp-home-hero-image-filter: blur(52px);
+  --vp-button-brand-border: transparent;
+  --vp-button-brand-text: #fff;
+  --vp-button-brand-bg: var(--monica-blue);
+  --vp-button-brand-hover-bg: var(--monica-deep);
+  --vp-custom-block-tip-border: transparent;
+  --vp-custom-block-tip-bg: var(--vp-c-brand-soft);
+}
+
+html.dark {
+  --monica-card-shadow: rgba(0, 0, 0, 0.32);
+  --vp-c-brand-soft: rgba(70, 216, 255, 0.12);
+}
+
+.VPHero {
+  padding-bottom: 48px !important;
+}
+
+.VPHero .name {
+  font-weight: 720;
+  letter-spacing: -0.035em;
+}
+
+.VPHero .text {
+  color: var(--vp-c-text-1);
+  font-weight: 650;
+}
+
+.VPHero .tagline {
+  max-width: 40rem;
+  color: var(--vp-c-text-2);
+  line-height: 1.75;
+}
+
+.VPHero .image-container {
+  animation: monica-float 5.2s ease-in-out infinite;
+  will-change: transform;
+}
+
+.VPHero .image-bg {
+  animation: monica-glow 5.2s ease-in-out infinite;
+  transform: translate(-50%, -50%) scale(1.22);
+}
+
+.VPHero .image-src {
+  max-width: 230px;
+  max-height: 230px;
+  filter: drop-shadow(0 18px 32px var(--monica-shadow));
+}
+
+.VPHero .actions .VPButton {
+  border-radius: 999px;
+  font-weight: 680;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.VPHero .actions .VPButton.brand {
+  box-shadow: 0 9px 22px var(--monica-shadow);
+}
+
+.VPFeatures {
+  padding-top: 26px !important;
+}
+
+.VPFeature {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--vp-c-divider) !important;
+  border-radius: 14px !important;
+  background: color-mix(in srgb, var(--vp-c-bg-soft) 92%, transparent) !important;
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+}
+
+.VPFeature::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  content: "";
+  background: linear-gradient(90deg, var(--monica-violet), var(--monica-blue), var(--monica-cyan));
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.VPFeature .icon {
+  display: inline-flex !important;
+  width: 50px;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 13px;
+  background: var(--vp-c-brand-soft) !important;
+  color: var(--vp-c-brand-1) !important;
+  font-size: 1.5rem !important;
+}
+
+.custom-block.warning,
+.custom-block.danger {
+  border-radius: 12px;
+}
+
+details {
+  margin: 18px 0;
+  padding: 0 16px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 12px;
+  background: var(--vp-c-bg-soft);
+}
+
+details summary {
+  padding: 14px 0;
+  cursor: pointer;
+  font-weight: 650;
+}
+
+details[open] {
+  padding-bottom: 14px;
+}
+
+@media (hover: hover) {
+  .VPHero .actions .VPButton.brand:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 13px 26px var(--monica-shadow-strong);
+  }
+
+  .VPFeature:hover {
+    border-color: var(--vp-c-brand-1) !important;
+    box-shadow: 0 12px 24px var(--monica-card-shadow);
+    transform: translateY(-4px);
+  }
+
+  .VPFeature:hover::before {
+    opacity: 1;
+  }
+}
+
+@keyframes monica-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes monica-glow {
+  0%, 100% { opacity: .74; }
+  50% { opacity: 1; }
+}
+
+@media (min-width: 640px) {
+  .VPHero .image-src {
+    max-width: 290px;
+    max-height: 290px;
+  }
+}
+
+@media (min-width: 960px) {
+  .VPHero .image-src {
+    max-width: 350px;
+    max-height: 350px;
+  }
+}
