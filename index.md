@@ -17,7 +17,7 @@ hero:
       link: /network/overview
     - theme: alt
       text: 项目仓库
-      link: https://github.com/monica-steam/monica-steam.github.io
+      link: https://github.com/JoyinJoester/Monica-Steam
 
 features:
   - title: Steam Guard 与多账号
