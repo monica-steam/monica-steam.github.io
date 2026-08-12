@@ -4,7 +4,7 @@
 
 Monica Steam Android 工程位于主项目仓库：
 
-`https://github.com/JiangKaslana/Monica-Steam`
+`https://github.com/JoyinJoester/Monica-Steam`
 
 常见构建要求以仓库当前 Gradle 配置为准。现有项目基线包括：
 
