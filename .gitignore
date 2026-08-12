@@ -2,4 +2,6 @@ node_modules/
 .vitepress/cache/
 .vitepress/dist/
 public/monica-steam.webp
+public/favicon.png
+public/support-author.jpg
 .DS_Store

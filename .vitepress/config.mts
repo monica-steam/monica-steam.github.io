@@ -10,7 +10,8 @@ export default defineConfig({
   head: [
     ["meta", { name: "theme-color", content: "#1a9fff" }],
     ["meta", { name: "color-scheme", content: "light dark" }],
-    ["link", { rel: "icon", type: "image/webp", href: "/monica-steam.webp" }],
+    ["link", { rel: "icon", type: "image/png", sizes: "64x64", href: "/favicon.png" }],
+    ["link", { rel: "shortcut icon", type: "image/png", href: "/favicon.png" }],
     ["link", { rel: "apple-touch-icon", href: "/monica-steam.webp" }],
   ],
   themeConfig: {
@@ -27,7 +28,9 @@ export default defineConfig({
           { text: "Monica Steam 主项目", link: "https://github.com/JoyinJoester/Monica-Steam" },
           { text: "Monica 生态关系", link: "/about/ecosystem" },
           { text: "版本状态", link: "/about/release-status" },
-          { text: "赞助与支持", link: "/about/support" },
+          { text: "赞助、QQ群与支持", link: "/about/support" },
+          { text: "致谢", link: "/about/thanks" },
+          { text: "友情链接", link: "/about/links" },
           { text: "文档站仓库", link: "https://github.com/monica-steam/monica-steam.github.io" },
         ],
       },
@@ -80,7 +83,9 @@ export default defineConfig({
         items: [
           { text: "Monica 生态关系", link: "/about/ecosystem" },
           { text: "版本状态", link: "/about/release-status" },
-          { text: "赞助与支持", link: "/about/support" },
+          { text: "赞助、QQ群与支持", link: "/about/support" },
+          { text: "致谢", link: "/about/thanks" },
+          { text: "友情链接", link: "/about/links" },
         ],
       },
     ],
@@ -113,7 +118,7 @@ export default defineConfig({
     ],
     footer: {
       message: "Monica Steam 是非官方第三方 Steam 客户端，与 Valve Corporation 无隶属、授权或赞助关系。",
-      copyright: "Monica Steam contributors · GPL-3.0",
+      copyright: '<strong>Monica Steam</strong>：<a href="https://github.com/JoyinJoester/Monica-Steam" target="_blank" rel="noreferrer">JoyinJoester</a> · GPL-3.0 <span class="docs-credit">· 文档贡献：<a href="https://github.com/JiangKaslana" target="_blank" rel="noreferrer">JiangKaslana</a> · <a href="https://kianakaslana.top" target="_blank" rel="noreferrer">Blog</a></span>',
     },
   },
 });
