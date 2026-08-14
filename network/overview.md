@@ -1,13 +1,13 @@
-# 动态 DNS / DoH 与静态 Hosts
+# 动态网络优化与静态网络优化（Hosts）
 
-Monica Steam 当前的网络优化主要分成两套独立机制：
+Monica Steam 的网络优化分成两套职责清晰、可以同时开启的机制：
 
-1. **动态 DNS / DoH**
-2. **静态 Hosts 扫描**
+1. **静态网络优化（Hosts）**：把指定 Steam 域名固定到已验证的 IP；
+2. **动态网络优化**：使用传统 DNS / HTTPS DoH 动态解析 Steam 域名，并验证候选 IP 的 HTTPS 可用性。
 
-两者共享统一的解析来源配置，但解析策略不同。
+> **静态优先，动态补充，系统 DNS 兜底。**
 
-> **解析来源统一管理，动态解析与静态固定各司其职。**
+底层实现中，传统 DNS 与 DoH 是不同的解析传输方式；在产品界面里，它们统一归入“动态网络优化”，因为最终目标都是在运行时为 Steam 域名得到可用地址。
 
 ## 为什么需要网络优化
 
@@ -17,120 +17,83 @@ Steam 商店、Community、Web API、登录、帮助、聊天和 CDN / UGC 静�
 - DNS 污染 / 劫持；
 - 解析失败；
 - 解析到质量不理想的 CDN；
-- 某些地址存在但 HTTPS 不可用；
+- DNS 返回公网 IP，但该 IP 对当前 Steam hostname 的 HTTPS 实际不可用；
 - 网络变化后旧地址失效。
 
-这类问题不一定需要 VPN。若主要问题发生在 DNS 层，恢复正确解析后，Steam HTTPS 业务流量仍可以保持直连。
+这类问题不一定需要 VPN。如果主要问题位于解析与 CDN 调度层，恢复一个实际可用的目标 IP 后，Steam HTTPS 业务流量仍然可以保持用户自己的网络直连。
 
-## 动态 DNS / DoH
+## 最终解析顺序
 
-动态模式更适合长期日常使用：
-
-```text
-配置一次
-  ↓
-按需解析
-  ↓
-短期缓存
-  ↓
-缓存失效后自动重新解析
-```
-
-应用访问受支持的 Steam 域名时，会按当前启用的解析来源进行解析。
-
-<details>
-<summary>展开：动态解析流程</summary>
+当前网络链路按以下优先级执行：
 
 ```text
-Steam 原生网络请求
-        ↓
-检查静态 Hosts 是否命中
-        ↓
-未命中
-        ↓
-检查动态 DNS 缓存
-        ↓
-缓存有效 ─────────→ 使用缓存
-        ↓
-无有效缓存
-        ↓
-调用启用的 DNS / DoH 来源
-        ↓
-得到公开 IP
-        ↓
-短期缓存
-        ↓
-Monica 直接连接 Steam / CDN
+Steam hostname
+      ↓
+静态 Hosts 是否命中？
+      ├─ 是 → 直接使用静态 IP
+      │        └─ 可选附加 Android System DNS fallback
+      │
+      └─ 否 → 动态网络优化
+                 ↓
+            DNS / DoH 解析
+                 ↓
+            收集候选 IP
+                 ↓
+       HTTPS / SNI / 证书可用性验证
+                 ↓
+          可用候选进入短期缓存
+                 ↓
+          全部失败时 System DNS fallback
 ```
 
-动态模式不会把某个 Steam IP 永久固定下来。网络或 CDN 变化后，缓存到期即可重新解析。
+静态 Hosts 命中后**不会再进入动态 DNS / DoH**。这样可以避免已经明确指定的优选 IP 被动态解析延迟、错误结果或其他解析来源干扰。
 
-</details>
+## 静态网络优化（Hosts）
 
-### 缓存
+静态 Hosts 适合“已经验证过、希望明确固定”的 Steam 域名。
 
-动态解析使用短期缓存，并允许在解析器临时失败时使用有限时间的过期缓存回退。
+### 内置优选 Hosts
 
-这样可以减少：
+Monica Steam 提供一组内置优选 Hosts 预设，当前包含 18 个常用 Steam / CDN hostname。它主要覆盖：
 
-- 每个 HTTP 请求都重新查 DNS；
-- 解析服务瞬时波动导致整个页面失败；
-- 高频重复写诊断日志。
+- Steam Web API；
+- Store；
+- 登录与结账；
+- Community 静态资源；
+- Steam Chat；
+- Steam CDN / SteamStatic；
+- 用户图片；
+- Support / Help；
+- Steam 网络连通性测试。
 
-### 并发合并
+首次没有保存过静态 Hosts 配置的安装可以使用内置预设；已有用户自己保存过 Hosts 的情况下，升级不会强行覆盖用户配置。设置菜单中也可以随时选择“使用内置优选 Hosts”。
 
-同一个 hostname 同时触发多个网络请求时，动态解析会尽量合并同域名的并发解析任务，而不是让每个请求都独立轰炸 DNS / DoH。
+内置预设默认保留 **System DNS fallback**，所以某个 CDN IP 将来失效时，不会因为一条固定映射永久阻断对应 hostname。
 
-## 解析来源
+### 自定义 Hosts
 
-解析来源统一管理，可按需启用。
+手工填写的 Hosts 与内置预设使用**同一套静态解析引擎**，格式和原来的 Hosts 编辑功能保持一致。
 
-内置公共来源包括：
-
-- Android System DNS；
-- DNSPod；
-- AliDNS；
-- Cloudflare；
-- Google Public DNS；
-- Quad9 ECS。
-
-此外支持用户添加：
-
-- 最多 8 个自定义 UDP DNS；
-- 最多 8 个自定义标准 HTTPS DoH。
-
-自定义解析源进入同一套列表，可以：
-
-- 独立启用 / 禁用；
-- 单独测速；
-- 参与全部测速；
-- 参与动态 DNS；
-- 参与静态 Hosts 扫描。
-
-## 多源竞争
-
-如果同时启用了多个解析源，动态解析可让它们在受控并发下参与解析。
+示例：
 
 ```text
-                 ┌─ System DNS
-Steam hostname ──┼─ Cloudflare
-                 ├─ Google
-                 ├─ 自定义 UDP DNS
-                 └─ 自定义 DoH
+184.84.58.165 store.steampowered.com
+184.87.199.210 api.steampowered.com
 ```
 
-注意：**DNS 响应最快不等于它返回的 Steam CDN 一定最快。**
+应用不会把请求 URL 改写成 IP 地址。连接仍使用原始 hostname：
 
-DNS 测速主要用于判断解析器自身：
+```text
+URL / Host: store.steampowered.com
+TLS SNI:    store.steampowered.com
+目标 IP:    184.84.58.165
+```
 
-- 是否可达；
-- 延迟；
-- 稳定性；
-- 是否频繁失败。
+因此 HTTPS 仍按 Steam 原域名完成 SNI 与证书验证。
 
-## 静态 Hosts 扫描
+### 静态扫描
 
-静态 Hosts 更适合“扫描、验证、固定”。
+如果希望自己重新优选，可以使用静态扫描：
 
 ```text
 启用的 DNS / DoH
@@ -141,112 +104,227 @@ HTTPS / SNI / TLS / 证书验证
       ↓
 重复采样和延迟比较
       ↓
-选择可用节点
+选择稳定节点
       ↓
 写入 Monica Steam 应用内 Hosts
 ```
 
 静态扫描不会因为 DNS 返回一个 IP 就直接固定它，而是继续验证实际 HTTPS 可用性。
 
-### 为什么需要 HTTPS / SNI / 证书验证
+## 动态网络优化
 
-单纯“能 ping”或“有 TCP 响应”不足以说明 IP 能正确服务目标 Steam hostname。
-
-扫描会尽量排除：
-
-- TLS 握手失败；
-- SNI 不正确；
-- 证书不匹配；
-- 已失效节点；
-- 私网 / 保留地址；
-- 常见 Fake-IP；
-- 不适用于目标服务的地址。
-
-## 为什么静态 Hosts 要重扫
-
-Hosts 的本质是固定。
-
-当以下条件变化时，旧 IP 可能不再是最佳选择：
-
-- Wi-Fi / 移动网络切换；
-- 运营商变化；
-- 跨网路由变化；
-- Steam CDN 调度变化；
-- IPv4 / IPv6 环境变化。
-
-所以静态 Hosts 适合“当前验证过的节点”，而不是“永久答案”。
-
-## 动态与静态同时开启
-
-静态 Hosts 优先：
+动态模式适合不希望长期固定 IP、希望 CDN 地址随网络变化自动重新解析的场景。
 
 ```text
-hostname
-  ↓
-命中静态 Hosts？ ──是→ 使用固定 IP
-  ↓ 否
-动态 DNS / DoH
-  ↓
-实时解析
+缓存 miss
+   ↓
+启用的传统 DNS / DoH 并行解析
+   ↓
+收集多个候选 IP
+   ↓
+短时并行 HTTPS 可用性验证
+   ↓
+只返回实际可服务目标 Steam hostname 的候选
+   ↓
+缓存约 5 分钟
 ```
 
-因此可以只固定少数问题域名，其余 Steam 域名继续动态解析。
+### 为什么不能“DNS 有答案就直接用”
+
+DNS 返回非空结果只说明“解析器给出了地址”，并不能证明：
+
+- 当前网络能连到该地址；
+- CDN 节点仍在服务该 Steam hostname；
+- TLS 握手可用；
+- SNI 与证书匹配；
+- 该结果没有被污染或错误调度。
+
+因此动态解析会对候选进行一次轻量 HTTPS 验证。验证使用原始 Steam hostname，并强制连接到候选 IP，所以 SNI 与证书校验不会被绕过。
+
+验证只在缓存 miss 时发生，验证通过后的结果继续使用短期缓存，不会每个 HTTP 请求都额外探测一次。
+
+### 动态解析失败如何回退
+
+如果自定义 DNS / DoH 返回了 IP，但这些候选全部无法通过 HTTPS 验证，它们不会被当作成功结果缓存。
+
+在启用 System DNS fallback 时：
+
+```text
+自定义 / 内置动态来源
+      ↓
+候选全部不可用
+      ↓
+Android System DNS
+```
+
+这避免了“自定义解析器能回答，但返回的路线不可用，于是开启动态网络优化后反而整个 Steam 打不开”的情况。
+
+## 解析来源
+
+动态网络优化统一管理解析来源。
+
+内置来源包括：
+
+- Android System DNS；
+- DNSPod DoH；
+- AliDNS DoH；
+- Cloudflare DoH；
+- Google Public DNS DoH；
+- Quad9 ECS DoH。
+
+此外支持：
+
+- 最多 8 个自定义传统 DNS；
+- 最多 8 个自定义标准 HTTPS DoH。
+
+自定义来源可以独立启用 / 禁用、单独测速并参与动态解析与静态扫描。
+
+### System DNS 的角色
+
+当存在已启用的传统 DNS / DoH 时，**System DNS 不再和它们抢“第一个响应”**。
+
+原因很简单：本地运营商 DNS 通常延迟很低，如果它和 DoH 同时竞速，往往会因为响应更快而长期抢在前面，使已经开启的 DoH 实际上很少被使用。
+
+因此现在的策略是：
+
+```text
+有非 System 动态来源：
+DNS / DoH 主解析 → System DNS fallback
+
+只有 System DNS：
+直接使用 System DNS
+```
+
+## DoH Bootstrap IP
+
+自定义 DoH 可以填写多个 Bootstrap IPv4 / IPv6。
+
+例如：
+
+```text
+DoH URL:
+https://dns.example/dns-query
+
+Bootstrap:
+1.1.1.1, 1.0.0.1
+```
+
+Bootstrap 的作用是帮助客户端在不先解析 `dns.example` 的情况下找到 DoH 服务端地址。
+
+它**不会**关闭 HTTPS 安全检查：
+
+- HTTPS URL 仍是原始 DoH hostname；
+- TLS SNI 仍使用该 hostname；
+- 证书仍必须匹配 hostname。
+
+修改 DoH endpoint 或 Bootstrap IP 后，Monica Steam 会清理旧的 DoH resolver 与其连接池，避免旧 TLS keep-alive 连接继续复用原地址，让新的 Bootstrap 看起来“没有生效”。
+
+## 配置变更为何立即清旧连接
+
+修改静态 Hosts、动态解析来源、DoH Bootstrap 或强制刷新缓存后，应用会立即清理空闲的旧 HTTPS 连接。
+
+否则存在这种窗口：
+
+```text
+保存新 IP / 新 DNS
+      ↓
+立即刷新页面
+      ↓
+OkHttp 继续复用旧 keep-alive 连接
+      ↓
+看起来像“设置没有生效”
+```
+
+当前实现只清理可复用的连接池，不会因为切换网络优化设置而粗暴取消正在执行的 HTTPS 请求。
+
+## 缓存与并发合并
+
+动态解析使用短期缓存，并允许在解析器短暂异常时保留有限的 stale cache 回退能力。
+
+同一个 hostname 同时触发多个请求时，会合并同域名的解析任务，避免页面加载时让多个请求同时轰炸 DNS / DoH。
+
+缓存和 resolver 设置变化会被明确区分：当解析器、Bootstrap 或启用状态变化时，会清理需要失效的运行时状态。
 
 ## IPv4 与 IPv6
 
 系统 DNS 与标准 DoH 可以处理 IPv4 / IPv6，并可提供 IPv6 优先策略。
 
-当前自定义传统 UDP DNS 主要以 IPv4 A 记录能力为主，因此与 DoH / System DNS 的能力并不完全相同。
+当前传统自定义 DNS 的运行时查询主要使用 IPv4 A 记录，因此与 DoH / System DNS 的能力并不完全相同。
 
 ## Steam 域名覆盖
 
-网络优化覆盖的目标不只商店首页，还包括 Monica Steam 实际使用的主要 Steam 服务族，例如：
+网络优化覆盖的不只是商店首页，还包括 Monica Steam 使用的主要 Steam 服务族，例如：
 
 - Store；
 - Community；
 - Web API；
-- 登录 / Help；
+- 登录 / Help / Support；
 - Chat；
 - 静态资源；
 - 媒体；
 - UGC；
 - 常见 CDN 域名。
 
-## 是否改变 Steam 登录 IP
+## 安全边界
 
-不会主动改变。
+当前网络优化不会为了“加速”牺牲 HTTPS 安全性：
+
+- 不关闭 TLS 证书校验；
+- 不把 Steam hostname 改写成裸 IP URL；
+- 不修改 SNI；
+- 不安装自定义 CA；
+- 不做 HTTPS MITM；
+- 不建立系统 VPN；
+- 不修改 Android 系统 Hosts；
+- 不修改其他应用网络。
+
+DoH 也只是 DNS 解析通道，不是 Steam HTTPS 代理：
 
 ```text
-DNS 查询：
-Monica → DNS / DoH → 返回目标 IP
+DNS：
+Monica → DNS / DoH → 得到目标 IP
 
 Steam HTTPS：
-用户自己的公网网络 → Steam
+用户自己的公网网络 → Steam / CDN
 ```
 
-DoH 服务器不是 Steam 流量代理。改变的是“目标 IP 怎么得到”，不是“用户从哪个第三方出口访问 Steam”。
+因此网络优化改变的是“目标地址怎么得到”，不是“登录流量从哪个第三方出口出去”。
 
-## 应用边界
+## WebView 边界
 
-当前网络优化是 **app-scoped**：
+当前静态 / 动态解析主要覆盖 Monica Steam 使用统一 OkHttp 网络栈的原生请求。
 
-- 不修改 Android 系统 DNS；
-- 不修改 Android 系统 Hosts；
-- 不建立系统 VPN；
-- 不修改其他应用网络；
-- 不承诺 WebView 全部走相同解析链路。
+Android WebView 内部仍有自己的 Chromium 网络栈，不能简单认为所有 WebView 请求都会自动继承应用级自定义 DNS。文档和功能不会把这一能力描述为“全局 Steam 代理”或“系统级直连”。
 
-## 推荐
+## 推荐配置
 
-普通用户：
+### 希望最稳定、省心
 
 ```text
-动态 DNS / DoH：开启
-静态 Hosts：关闭
+静态网络优化：使用内置优选 Hosts
+System DNS fallback：开启
+动态网络优化：可按需开启
 ```
 
-如果某些 Steam 域名长期不稳定，再执行静态 Hosts 扫描。
+对于已经验证有效的常用 Steam 域名，静态 Hosts 可以提供最确定的路线；未覆盖域名仍可以继续动态解析。
 
-如果希望自建一个只用于 DNS 的中转，可继续阅读：
+### 希望地址随网络自动变化
+
+```text
+静态 Hosts：只固定确实有问题的域名，或关闭
+动态网络优化：开启
+DNS / DoH：选择当前网络实际可用的来源
+System DNS fallback：建议开启
+```
+
+### 使用自建 DoH
+
+建议先在解析来源页单独测速，再开启动态网络优化。即使自定义 DoH 能返回 DNS 结果，运行时也会继续验证返回的 Steam 候选是否真的可以建立 HTTPS 连接。
+
+如需自建一个只用于 DNS 的中转，可继续阅读：
 
 [Cloudflare Worker 反代 Google DoH](/network/cloudflare-google-doh)
+
+本轮网络优化改动记录见：
+
+[2026-08-14 网络优化重构](/network/changelog-2026-08-14)
