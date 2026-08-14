@@ -18,20 +18,36 @@ export default defineConfig({
     logo: "/monica-steam.webp",
     siteTitle: "Monica Steam",
     nav: [
-      { text: "指南", link: "/guide/quick-start" },
-      { text: "网络优化", link: "/network/overview" },
-      { text: "参考", link: "/reference/faq" },
-      { text: "开发", link: "/development/build" },
+      { text: "指南", link: "/guide/quick-start", activeMatch: "^/guide/" },
+      { text: "网络优化", link: "/network/overview", activeMatch: "^/network/" },
+      { text: "帮助", link: "/reference/faq", activeMatch: "^/reference/" },
+      { text: "开发", link: "/development/build", activeMatch: "^/development/" },
+      { text: "友情链接", link: "/about/links", activeMatch: "^/about/links" },
       {
         text: "项目",
+        activeMatch: "^/about/(ecosystem|release-status|support|thanks)",
         items: [
-          { text: "Monica Steam 主项目", link: "https://github.com/JoyinJoester/Monica-Steam" },
-          { text: "Monica 生态关系", link: "/about/ecosystem" },
-          { text: "版本状态", link: "/about/release-status" },
-          { text: "赞助、QQ群与支持", link: "/about/support" },
-          { text: "致谢", link: "/about/thanks" },
-          { text: "友情链接", link: "/about/links" },
-          { text: "文档站仓库", link: "https://github.com/monica-steam/monica-steam.github.io" },
+          {
+            text: "项目与版本",
+            items: [
+              { text: "Monica 生态与项目关系", link: "/about/ecosystem" },
+              { text: "当前版本状态", link: "/about/release-status" },
+            ],
+          },
+          {
+            text: "社区",
+            items: [
+              { text: "赞助、QQ群与支持", link: "/about/support" },
+              { text: "致谢与贡献", link: "/about/thanks" },
+            ],
+          },
+          {
+            text: "GitHub",
+            items: [
+              { text: "Monica Steam 主项目", link: "https://github.com/JoyinJoester/Monica-Steam" },
+              { text: "文档站仓库", link: "https://github.com/monica-steam/monica-steam.github.io" },
+            ],
+          },
         ],
       },
     ],
@@ -45,7 +61,7 @@ export default defineConfig({
         ],
       },
       {
-        text: "核心功能",
+        text: "功能指南",
         collapsed: false,
         items: [
           { text: "账号、Steam Guard 与确认", link: "/guide/account-guard" },
@@ -63,7 +79,7 @@ export default defineConfig({
         ],
       },
       {
-        text: "参考",
+        text: "设置与帮助",
         collapsed: true,
         items: [
           { text: "设置与使用建议", link: "/reference/settings" },
@@ -71,7 +87,7 @@ export default defineConfig({
         ],
       },
       {
-        text: "开发",
+        text: "开发者",
         collapsed: true,
         items: [
           { text: "构建与测试", link: "/development/build" },
@@ -79,17 +95,23 @@ export default defineConfig({
         ],
       },
       {
-        text: "关于",
+        text: "项目与社区",
         collapsed: true,
         items: [
-          { text: "Monica 生态关系", link: "/about/ecosystem" },
-          { text: "版本状态", link: "/about/release-status" },
+          { text: "Monica 生态与项目关系", link: "/about/ecosystem" },
+          { text: "当前版本状态", link: "/about/release-status" },
           { text: "赞助、QQ群与支持", link: "/about/support" },
-          { text: "致谢", link: "/about/thanks" },
-          { text: "友情链接", link: "/about/links" },
+          { text: "致谢与贡献", link: "/about/thanks" },
         ],
       },
+      { text: "友情链接", link: "/about/links" },
     ],
+    sidebarMenuLabel: "文档导航",
+    returnToTopLabel: "返回顶部",
+    darkModeSwitchLabel: "主题",
+    lightModeSwitchTitle: "切换到浅色主题",
+    darkModeSwitchTitle: "切换到深色主题",
+    skipToContentLabel: "跳到正文",
     search: {
       provider: "local",
       options: {
