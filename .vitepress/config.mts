@@ -18,13 +18,14 @@ export default defineConfig({
     logo: "/monica-steam.webp",
     siteTitle: "Monica Steam",
     nav: [
-      { text: "指南", link: "/guide/quick-start" },
-      { text: "网络优化", link: "/network/overview" },
-      { text: "帮助", link: "/reference/faq" },
-      { text: "开发", link: "/development/build" },
-      { text: "友情链接", link: "/about/links" },
+      { text: "指南", link: "/guide/quick-start", activeMatch: "^/guide/" },
+      { text: "网络优化", link: "/network/overview", activeMatch: "^/network/" },
+      { text: "帮助", link: "/reference/faq", activeMatch: "^/reference/" },
+      { text: "开发", link: "/development/build", activeMatch: "^/development/" },
+      { text: "友情链接", link: "/about/links", activeMatch: "^/about/links" },
       {
         text: "项目",
+        activeMatch: "^/about/(ecosystem|release-status|support|thanks)",
         items: [
           {
             text: "项目与版本",
@@ -106,6 +107,11 @@ export default defineConfig({
       { text: "友情链接", link: "/about/links" },
     ],
     sidebarMenuLabel: "文档导航",
+    returnToTopLabel: "返回顶部",
+    darkModeSwitchLabel: "主题",
+    lightModeSwitchTitle: "切换到浅色主题",
+    darkModeSwitchTitle: "切换到深色主题",
+    skipToContentLabel: "跳到正文",
     search: {
       provider: "local",
       options: {
