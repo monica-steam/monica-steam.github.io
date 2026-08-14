@@ -164,6 +164,10 @@ DNS 响应快
 DNS 返回的 Steam CDN 一定最快
 ```
 
+Monica Steam 的动态网络优化也不会再把“DNS 返回了公网 IP”直接视为最终成功。缓存 miss 时，动态模式会继续验证返回候选是否能以原始 Steam hostname 完成 HTTPS / SNI / 证书校验。
+
+因此这里更应该保持 Worker 简单透明，让 DNS Relay 只负责解析，不把 CDN 选择、HTTPS 验证和 Steam 业务代理揉成一套系统。
+
 同时不建议直接访问所谓 Cloudflare 优选 IP。Worker 应通过正常 hostname 访问，由 Cloudflare 自己处理网络入口；上游 `dns.google` 也由 Google 自己处理其 Anycast / 网络调度。
 
 ## 不要公开成公共 DoH
@@ -192,24 +196,60 @@ DNS 返回的 Steam CDN 一定最快
 在 Monica Steam：
 
 ```text
-网络优化
-→ 解析来源
-→ 添加自定义 DoH
+设置
+→ 网络优化
+→ 动态网络优化
+→ 添加解析服务器
 ```
 
-添加：
+输入完整 HTTPS DoH 地址，例如：
 
 ```text
-名称：Google DoH · Cloudflare Relay
-地址：https://你的Worker域名/<TOKEN>/dns-query
+https://你的Worker域名/<TOKEN>/dns-query
 ```
 
-保存后，它进入统一解析来源列表，可以用于：
+Monica Steam 会根据 `https://` 自动识别为 DoH，不需要再手动切换 DNS / DoH 类型。
 
-- 动态 DNS；
+保存后，它进入统一的动态解析来源列表，可以用于：
+
+- 动态网络优化；
 - 单独测速；
 - 全部测速；
 - 静态 Hosts 扫描。
+
+## 是否需要 Bootstrap IP
+
+对于 `workers.dev` 或绑定到 Cloudflare 的自定义域名，通常可以先不填写 Bootstrap，直接测试 DoH 是否可达。
+
+如果你有明确可用的 DoH 服务端入口 IP，也可以在 Monica Steam 中填写多个 Bootstrap IPv4 / IPv6。Bootstrap 只用于帮助应用找到 DoH hostname：
+
+- URL 仍然保持原 DoH hostname；
+- TLS SNI 仍然使用 hostname；
+- 证书仍必须匹配 hostname。
+
+修改 Bootstrap 后，Monica Steam 会清理旧 DoH resolver 的连接状态，避免旧 TLS keep-alive 继续复用原地址。
+
+::: warning
+不要把任意 Cloudflare 边缘 IP 当成“Worker Bootstrap IP”硬填进去。Cloudflare 的边缘路由和证书服务依赖 hostname / Anycast 调度，错误固定 IP 反而可能降低可用性。
+:::
+
+## 动态解析中的失败回退
+
+即使 Worker 本身能返回 DNS 结果，也不代表该结果中的 Steam CDN IP 在当前网络一定可用。
+
+动态网络优化会继续做轻量 HTTPS 验证：
+
+```text
+Worker / Google DoH 返回候选
+      ↓
+验证目标 Steam hostname 的 HTTPS
+      ↓
+可用 → 短期缓存
+不可用 → 尝试其他动态来源 / 候选
+全部失败 → System DNS fallback（若开启）
+```
+
+因此建议保留 System DNS fallback，尤其是在自建 DoH 仍处于测试阶段时。
 
 ## 隐私边界
 
@@ -220,3 +260,7 @@ DNS 返回的 Steam CDN 一定最快
 - Steam HTTPS 内容本身不会因为这套配置自动经过 Worker。
 
 因此它属于 **DNS Relay**，不是 **Steam Proxy**。
+
+更多网络优化原理与静态 Hosts 优先级请阅读：
+
+[动态网络优化与静态网络优化（Hosts）](/network/overview)
