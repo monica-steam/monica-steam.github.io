@@ -21,10 +21,23 @@ Monica Steam 仍处于公开测试阶段，而不是稳定正式版。
 - Steam 商店；
 - 好友、聊天与通知；
 - 备份和本地安全；
-- 动态 DNS / DoH；
-- 静态 Hosts 扫描；
-- 自定义 UDP DNS / HTTPS DoH；
+- **静态网络优化（Hosts）**，包括内置优选 Hosts 与自定义 Hosts；
+- **动态网络优化**，统一管理传统 DNS 与 HTTPS DoH；
+- 自定义传统 DNS / HTTPS DoH；
+- 自定义 DoH Bootstrap IPv4 / IPv6；
+- 动态候选的 HTTPS / SNI / 证书可用性验证与 System DNS fallback；
 - 原生 Steam 页面与内置网页能力。
+
+## 网络优化当前边界
+
+网络优化仍然是 Monica Steam 应用范围内的解析与目标地址选择能力：
+
+- 不修改 Android 系统 DNS / Hosts；
+- 不建立系统 VPN；
+- 不关闭 HTTPS 证书校验；
+- 不承诺 Android WebView 的 Chromium 网络栈全部继承应用级自定义 DNS。
+
+详见：[动态网络优化与静态网络优化（Hosts）](/network/overview)。
 
 ## 更新时
 
