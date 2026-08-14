@@ -57,7 +57,8 @@ export default defineConfig({
         text: "网络优化",
         collapsed: false,
         items: [
-          { text: "动态 DNS / DoH 与静态 Hosts", link: "/network/overview" },
+          { text: "动态网络优化与静态 Hosts", link: "/network/overview" },
+          { text: "2026-08-14 网络优化重构", link: "/network/changelog-2026-08-14" },
           { text: "Cloudflare Worker 反代 Google DoH", link: "/network/cloudflare-google-doh" },
         ],
       },
