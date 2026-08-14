@@ -267,6 +267,43 @@ details[open] {
   50% { opacity: 1; }
 }
 
+@media (max-width: 959px) {
+  /* The top-right hamburger is the site navigation. Keep the local bar as a
+     clearly different document navigation control instead of showing a second
+     hamburger immediately below it. */
+  .VPLocalNav .menu-icon {
+    display: none;
+  }
+
+  .VPLocalNav .menu {
+    font-size: .8rem;
+    font-weight: 650;
+    letter-spacing: .01em;
+  }
+
+  .VPLocalNav .menu,
+  .VPLocalNav .VPLocalNavOutlineDropdown > button {
+    padding: .62rem 1.1rem .58rem;
+  }
+
+  .VPLocalNav .container {
+    min-height: 42px;
+  }
+
+  .VPLocalNav {
+    border-bottom-color: color-mix(in srgb, var(--vp-c-divider) 82%, transparent);
+    background: color-mix(in srgb, var(--vp-local-nav-bg-color) 96%, transparent);
+    backdrop-filter: blur(10px);
+  }
+}
+
+@media (max-width: 639px) {
+  .VPLocalNav .menu,
+  .VPLocalNav .VPLocalNavOutlineDropdown > button {
+    padding-inline: 1rem;
+  }
+}
+
 @media (min-width: 640px) {
   .VPHero .image-src {
     max-width: 290px;
